@@ -1,6 +1,6 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-// Responsive hook for demo
 function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth < 800);
   React.useEffect(() => {
@@ -14,9 +14,9 @@ function useIsMobile() {
 const pages = [
   { name: "Home", path: "#" },
   { name: "Notifications", path: "#" },
-  { name: "Exam Schedule", path: "#" },
-  { name: "Results", path: "#" },
-  { name: "Resources", path: "#" },
+  { name: "Exam Schedule", path: "UPSC/examschedule" },
+  { name: "Results", path: "/UPSC/results" },
+  { name: "Resources", path: "UPSC/examschedule" },
   { name: "Contact", path: "#" },
 ];
 
@@ -30,93 +30,114 @@ export default function Navbar() {
       maxWidth: "100vw",
       background: "#fff",
       borderBottom: "1.5px solid #eceef1",
-      padding: isMobile ? "0 3vw" : "0 36px",
       position: "sticky",
       top: 0,
       zIndex: 100,
       boxSizing: "border-box",
-      minHeight: 64
+      minHeight: 64,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      padding: isMobile ? "0 18px" : "0 36px",
     }}>
+      {/* Left: Logo and subtitle */}
       <div style={{
         display: "flex",
-        justifyContent: isMobile ? "space-between" : "flex-start",
-        alignItems: isMobile ? "center" : "flex-end",
-        minHeight: 64
+        flexDirection: "column",
+        minWidth: 120,
+        marginRight: 28,
+        justifyContent: "center",
       }}>
-        {/* Logo + Subtitle */}
-        <div style={{
-          display: "flex",
-          flexDirection: "column",
-          minWidth: 120,
-          marginRight: 24
+        <span style={{
+          fontWeight: 700,
+          fontSize: isMobile ? 21 : 28,
+          color: "#23376B",
+          fontFamily: "Montserrat, sans-serif",
+          letterSpacing: ".5px",
         }}>
-          <span style={{fontWeight:700, fontSize: isMobile ? 21 : 28, color:"#23376B", fontFamily:"Montserrat", letterSpacing:".5px"}}>
-            UPSC Portal
-          </span>
-          <span style={{fontWeight:400, fontSize: isMobile ? 11 : 13, color:"#6f82a4", lineHeight:1.1}}>
-            Union Public Service Commission
-          </span>
-        </div>
-
-        {/* Hamburger menu for mobile */}
-        {isMobile && (
-          <button
-            aria-label="Toggle Menu"
-            onClick={() => setMenuOpen(v => !v)}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: 32,
-              cursor: "pointer",
-              padding: "0 8px"
-            }}
-          >
-            <span style={{display:"block"}}>{menuOpen ? "✕" : "☰"}</span>
-          </button>
-        )}
+          UPSC Portal
+        </span>
+        <span style={{
+          fontWeight: 400,
+          fontSize: isMobile ? 11 : 13,
+          color: "#6f82a4",
+          lineHeight: 1.1
+        }}>
+          Union Public Service Commission
+        </span>
       </div>
 
-      {/* Navigation links */}
-      {/* Desktop: visible and centered row; Mobile: overlayed vertical menu */}
-      {(menuOpen || !isMobile) && (
+      {/* Desktop: Horizontal nav links in same row */}
+      {!isMobile && (
         <div style={{
           display: "flex",
-          flexDirection: isMobile ? "column" : "row",
           alignItems: "center",
-          justifyContent: isMobile ? "flex-start" : "center",
-          gap: isMobile ? 14 : 34,
-          background: isMobile ? "#fff" : "transparent",
-          width: isMobile ? "100%" : "auto",
-          position: isMobile ? "absolute" : "static",
-          left: 0,
-          right: 0,
-          boxShadow: isMobile ? "0 6px 20px #7892ba12" : "",
-          zIndex: 101,
-          margin: isMobile ? "8px 0 0 0" : "0",
-          padding: isMobile ? "18px 0 12px 0" : "0"
+          gap: 36,
+          fontFamily: "Inter, sans-serif",
         }}>
           {pages.map((page, idx) => (
             <a key={idx} href={page.path} style={{
               textDecoration: "none",
               color: "#23376B",
-              fontWeight: isMobile ? 600 : 500,
-              fontSize: isMobile ? 19 : 19,
-              fontFamily:'Inter, sans-serif',
-              letterSpacing: isMobile ? 0.25 : 0,
-              padding: isMobile ? "8px 0" : "3px 10px",
-              borderRadius: 7,
-              textAlign: "center",
-              width: isMobile ? "100%" : "auto",
-              transition: "background .17s"
-            }}
-            onClick={()=> isMobile && setMenuOpen(false)}>
+              fontWeight: 500,
+              fontSize: 19,
+              borderRadius: 6,
+              padding: "7px 12px",
+              transition: "background .16s"
+            }}>
               {page.name}
             </a>
           ))}
         </div>
       )}
 
-      {/* Optionally put your search, notification, or profile area below or right of links */}
+      {/* Mobile: Hamburger, dropdown menu */}
+      {isMobile && (
+        <>
+          <button
+            onClick={() => setMenuOpen(v => !v)}
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: 28,
+              cursor: "pointer",
+              marginLeft: 12
+            }}
+            aria-label="Toggle navigation menu"
+          >
+            {menuOpen ? "✕" : "☰"}
+          </button>
+          {menuOpen && (
+            <div style={{
+              position: "absolute",
+              top: 64,
+              left: 0,
+              right: 0,
+              background: "#fff",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+              display: "flex",
+              flexDirection: "column",
+              padding: "12px 24px",
+              gap: 16,
+              zIndex: 101
+            }}>
+              {pages.map((page, idx) => (
+                <a key={idx} href={page.path} style={{
+                  textDecoration: "none",
+                  color: "#23376B",
+                  fontWeight: 600,
+                  fontSize: 20,
+                  padding: "8px",
+                  borderRadius: 6,
+                  cursor: "pointer"
+                }} onClick={() => setMenuOpen(false)}>
+                  {page.name}
+                </a>
+              ))}
+            </div>
+          )}
+        </>
+      )}
     </nav>
   );
 }

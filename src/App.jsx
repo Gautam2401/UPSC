@@ -1,21 +1,30 @@
-import React from "react";
-import Navbar from "./Components/navbar";
-import HeroSection from "./Components/HeroSection";
-import Dashboard from "./Components/DashBoard";
-import LatestUpdates from "./Components/LatestUpdates";
-import ResourcesDownloads from "./Components/ResourcesDownloads";
-import RecentNotifications from "./Components/RecentNotifications";
-import Footer from "./Components/Footer";
+import HomePage from "./Components/Pages/Homepage";
+import ResultPage from "./Components/Pages/ResultPage"; // Import your results page
+import ExamSchedulePage from "./Components/Pages/examschedule";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 
-export default function App() {
+function Layout() {
   return (
     <>
-      <Navbar />
-      <HeroSection />
-      <Dashboard />
-      <RecentNotifications/>
-      <ResourcesDownloads/>
-      <Footer/>
+      <Outlet />
     </>
   );
+}
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: "results", element: <ResultPage /> }, // Add this line for results page
+      { path: "examschedule", element: <ExamSchedulePage/> },
+    ],
+  },
+],
+{ basename: "/UPSC" }
+);
+
+export default function App() {
+  return <RouterProvider router={router} />;
 }
