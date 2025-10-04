@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth < 800);
@@ -12,12 +13,12 @@ function useIsMobile() {
 }
 
 const pages = [
-  { name: "Home", path: "#" },
-  { name: "Notifications", path: "#" },
+  { name: "Home", path: "/" },
+  { name: "Notifications", path: "/notifications" },
   { name: "Exam Schedule", path: "/examschedule" },
-  { name: "Results", path: "/results" },
-  { name: "Resources", path: "/examschedule" },
-  { name: "Contact", path: "#" },
+  { name: "Results", path: "UPSC/results" },
+  { name: "Resources", path: "/resources" },
+  { name: "Contact", path: "/contact" }
 ];
 
 export default function Navbar() {

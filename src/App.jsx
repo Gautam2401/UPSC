@@ -13,7 +13,7 @@ function Layout() {
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/UPSC",
     element: <Layout />,
     children: [
       { index: true, element: <HomePage /> },
@@ -22,7 +22,7 @@ const router = createBrowserRouter([
     ],
   },
 ],
-{ basename: "/UPSC" }
+{ basename: "/" }
 );
 
 export default function App() {
