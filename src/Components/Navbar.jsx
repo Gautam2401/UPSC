@@ -1,107 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 
-const styles = {
-  navbar: {
-    width: "100%",
-    minHeight: 88,
-    background: "#fff",
-    borderBottom: "1.5px solid #eceef1",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "0 36px",
-    fontFamily: '"Montserrat", sans-serif',
-    position: "sticky",
-    top: 0,
-    zIndex: 100,
-  },
-  left: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    marginRight: 40,
-    minWidth: 220,
-  },
-  portalTitle: {
-    fontWeight: 700,
-    fontSize: 32,
-    color: "#23376B",
-    letterSpacing: "1px",
-    lineHeight: 1.1,
-  },
-  subtitle: {
-    fontWeight: 400,
-    color: "#6f82a4",
-    fontSize: 15,
-    marginTop: "-4px",
-    letterSpacing: 0.1,
-  },
-  center: {
-    display: "flex",
-    alignItems: "center",
-    gap: 38,
-    flex: 1,
-    justifyContent: "center",
-  },
-  navlink: {
-    textDecoration: "none",
-    color: "#212738",
-    fontWeight: 500,
-    fontSize: 21,
-    fontFamily: '"Inter", sans-serif',
-    transition: "color .17s",
-    padding: "2px 8px",
-    borderRadius: 6,
-  },
-  navlinkActive: {
-    color: "#1834a9",
-    fontWeight: 700,
-  },
-  right: {
-    display: "flex",
-    alignItems: "center",
-    gap: 24,
-    minWidth: 270,
-    justifyContent: "flex-end",
-  },
-  searchBox: {
-    background: "#f6f8fa",
-    border: "1.5px solid #e0e1e6",
-    color: "#22376d",
-    fontSize: "1.08rem",
-    borderRadius: 13,
-    fontFamily: '"Inter", sans-serif',
-    padding: "13px 22px",
-    width: 260,
-    outline: "none",
-  },
-  bellIconWrap: {
-    position: "relative",
-    marginLeft: 6,
-  },
-  bellIcon: {
-    fontSize: 26,
-    color: "#22376d",
-    verticalAlign: "middle",
-    cursor: "pointer"
-  },
-  badge: {
-    position: "absolute",
-    top: "-5px",
-    right: "-7px",
-    background: "#ad251c",
-    color: "#fff",
-    fontSize: 13,
-    fontWeight: 700,
-    borderRadius: "13px",
-    height: 22,
-    width: 22,
-    lineHeight: "22px",
-    textAlign: "center",
-    border: "2.5px solid #fff",
-    boxShadow: "0 1px 7px #ad251c40"
-  }
-};
+// Responsive hook for demo
+function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 800);
+  React.useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 800);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  return isMobile;
+}
 
 const pages = [
   { name: "Home", path: "#" },
@@ -113,37 +21,102 @@ const pages = [
 ];
 
 export default function Navbar() {
+  const isMobile = useIsMobile();
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <nav style={styles.navbar}>
-      {/* Left logo and portal subtitle */}
-      <div style={styles.left}>
-        <span style={styles.portalTitle}>UPSC Portal</span>
-        <span style={styles.subtitle}>
-          Union Public Service Commission
-        </span>
-      </div>
-      {/* Center nav links */}
-      <div style={styles.center}>
-        {pages.map((page, idx) => (
-          <a key={idx} href={page.path} style={styles.navlink}>
-            {page.name}
-          </a>
-        ))}
-      </div>
-      {/* Right search and bell */}
-      <div style={styles.right}>
-        <input
-          type="text"
-          style={styles.searchBox}
-          placeholder="Search notifications, forms..."
-        />
-        <div style={styles.bellIconWrap}>
-          <span role="img" aria-label="bell" style={styles.bellIcon}>
-            🔔
+    <nav style={{
+      width: "100vw",
+      maxWidth: "100vw",
+      background: "#fff",
+      borderBottom: "1.5px solid #eceef1",
+      padding: isMobile ? "0 3vw" : "0 36px",
+      position: "sticky",
+      top: 0,
+      zIndex: 100,
+      boxSizing: "border-box",
+      minHeight: 64
+    }}>
+      <div style={{
+        display: "flex",
+        justifyContent: isMobile ? "space-between" : "flex-start",
+        alignItems: isMobile ? "center" : "flex-end",
+        minHeight: 64
+      }}>
+        {/* Logo + Subtitle */}
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          minWidth: 120,
+          marginRight: 24
+        }}>
+          <span style={{fontWeight:700, fontSize: isMobile ? 21 : 28, color:"#23376B", fontFamily:"Montserrat", letterSpacing:".5px"}}>
+            UPSC Portal
           </span>
-          <span style={styles.badge}>3</span>
+          <span style={{fontWeight:400, fontSize: isMobile ? 11 : 13, color:"#6f82a4", lineHeight:1.1}}>
+            Union Public Service Commission
+          </span>
         </div>
+
+        {/* Hamburger menu for mobile */}
+        {isMobile && (
+          <button
+            aria-label="Toggle Menu"
+            onClick={() => setMenuOpen(v => !v)}
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: 32,
+              cursor: "pointer",
+              padding: "0 8px"
+            }}
+          >
+            <span style={{display:"block"}}>{menuOpen ? "✕" : "☰"}</span>
+          </button>
+        )}
       </div>
+
+      {/* Navigation links */}
+      {/* Desktop: visible and centered row; Mobile: overlayed vertical menu */}
+      {(menuOpen || !isMobile) && (
+        <div style={{
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: "center",
+          justifyContent: isMobile ? "flex-start" : "center",
+          gap: isMobile ? 14 : 34,
+          background: isMobile ? "#fff" : "transparent",
+          width: isMobile ? "100%" : "auto",
+          position: isMobile ? "absolute" : "static",
+          left: 0,
+          right: 0,
+          boxShadow: isMobile ? "0 6px 20px #7892ba12" : "",
+          zIndex: 101,
+          margin: isMobile ? "8px 0 0 0" : "0",
+          padding: isMobile ? "18px 0 12px 0" : "0"
+        }}>
+          {pages.map((page, idx) => (
+            <a key={idx} href={page.path} style={{
+              textDecoration: "none",
+              color: "#23376B",
+              fontWeight: isMobile ? 600 : 500,
+              fontSize: isMobile ? 19 : 19,
+              fontFamily:'Inter, sans-serif',
+              letterSpacing: isMobile ? 0.25 : 0,
+              padding: isMobile ? "8px 0" : "3px 10px",
+              borderRadius: 7,
+              textAlign: "center",
+              width: isMobile ? "100%" : "auto",
+              transition: "background .17s"
+            }}
+            onClick={()=> isMobile && setMenuOpen(false)}>
+              {page.name}
+            </a>
+          ))}
+        </div>
+      )}
+
+      {/* Optionally put your search, notification, or profile area below or right of links */}
     </nav>
   );
 }

@@ -4,6 +4,7 @@ import HeroSection from "./Components/HeroSection";
 import Dashboard from "./Components/DashBoard";
 import LatestUpdates from "./Components/LatestUpdates";
 import ResourcesDownloads from "./Components/ResourcesDownloads";
+import RecentNotifications from "./Components/RecentNotifications";
 import Footer from "./Components/Footer";
 
 export default function App() {
@@ -12,7 +13,7 @@ export default function App() {
       <Navbar />
       <HeroSection />
       <Dashboard />
-      <LatestUpdates />
+      <RecentNotifications/>
       <ResourcesDownloads/>
       <Footer/>
     </>

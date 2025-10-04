@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 
-// Simple icons using SVG or Unicode
+// --- ICONS (as in your code) ---
 const downloadIcon = (
   <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path fill="#29376d" d="M12 16.5l-5-5h3V4h4v7.5h3l-5 5zM5 20h14v-2H5v2z"/></svg>
 );
@@ -17,9 +17,25 @@ const externalIcon = (
   <svg width="17" height="17" fill="none" viewBox="0 0 24 24"><path d="M15 3h6v6" stroke="#22376d" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M10 14L21 3" stroke="#22376d" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M19 13v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6" stroke="#22376d" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
 );
 
-function DownloadItem({ title, sub, link }) {
+// --- Responsive hook ---
+function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 700);
+  React.useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 700);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  return isMobile;
+}
+
+// --- DownloadItem and ResourceCard as before ---
+function DownloadItem({ title, sub, link, isMobile }) {
   return (
-    <a href={link} style={styles.downloadRow}>
+    <a href={link} style={{
+      ...styles.downloadRow,
+      padding: isMobile ? "10px 8px 8px 8px" : "13px 18px 10px 16px",
+      fontSize: isMobile ? "0.98em" : "1.07em"
+    }}>
       <div>
         <div style={styles.dTitle}>{title}</div>
         <div style={styles.dSub}>{sub}</div>
@@ -29,105 +45,125 @@ function DownloadItem({ title, sub, link }) {
   );
 }
 
-function ResourceCard({ icon, title, desc, link }) {
+function ResourceCard({ icon, title, desc, link, isMobile }) {
   return (
-    <div style={styles.resourceCard}>
+    <div style={{
+      ...styles.resourceCard,
+      width: isMobile ? "90vw" : 304,
+      padding: isMobile ? "22px 10px 18px 10px" : "40px 26px 28px 26px"
+    }}>
       <div style={styles.rIcon}>{icon}</div>
-      <div style={styles.rTitle}>{title}</div>
-      <div style={styles.rDesc}>{desc}</div>
-      <a href={link} style={styles.rBtn}>
+      <div style={{...styles.rTitle, fontSize: isMobile ? "1.05rem" : "1.18rem"}}>{title}</div>
+      <div style={{...styles.rDesc, fontSize: isMobile ? ".93rem" : ".99rem"}}>{desc}</div>
+      <a href={link} style={{
+        ...styles.rBtn,
+        fontSize: isMobile ? ".95em" : ".99em",
+        padding: isMobile ? "8px 10px" : "10px 15px"
+      }}>
         Access Now <span style={styles.rBtnIcon}>{externalIcon}</span>
       </a>
     </div>
   );
 }
 
+// --- Main Component ---
 export default function ResourcesDownloads() {
+  const isMobile = useIsMobile();
+  const [collapsed, setCollapsed] = useState(isMobile);
+
+  React.useEffect(() => {
+    setCollapsed(isMobile);
+  }, [isMobile]);
+
   return (
-    <section style={styles.bg}>
-      <div style={styles.heading}>Resources & Downloads</div>
-      <div style={styles.subhead}>
-        Access previous year papers, syllabus, forms, and other essential resources<br /> for your preparation
+    <section style={{
+      ...styles.bg,
+      padding: isMobile ? "10px 0 16px 0" : "42px 0 46px 0"
+    }}>
+      <div
+        style={{
+          ...styles.heading,
+          fontSize: isMobile ? "1.25rem" : "2.6rem",
+          cursor: isMobile ? "pointer" : "default",
+          userSelect: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+        onClick={() => isMobile && setCollapsed(c => !c)}
+      >
+        Resources & Downloads
+        {isMobile &&
+          <span style={{
+            marginLeft: 14,
+            fontSize: 26,
+            display: "inline-block",
+            transform: collapsed ? "rotate(0deg)" : "rotate(90deg)",
+            transition: "transform .2s",
+            color: "#22376d"
+          }}>▶</span>
+        }
       </div>
-      <div style={styles.flexTopBoxes}>
-        {/* Previous Year Papers */}
-        <div style={styles.topCardBox}>
-          <div style={styles.boxHead}>Previous Year Papers</div>
-          <DownloadItem
-            title="Civil Services Preliminary 2023"
-            sub="PDF • 2.4 MB"
-            link="#"
-          />
-          <DownloadItem
-            title="Engineering Services 2023"
-            sub="PDF • 1.8 MB"
-            link="#"
-          />
-          <DownloadItem
-            title="Indian Forest Service 2023"
-            sub="PDF • 1.2 MB"
-            link="#"
-          />
-        </div>
-        {/* Syllabus & Guidelines */}
-        <div style={styles.topCardBox}>
-          <div style={styles.boxHead}>Syllabus & Guidelines</div>
-          <DownloadItem
-            title="Civil Services Examination Syllabus"
-            sub="PDF • 890 KB"
-            link="#"
-          />
-          <DownloadItem
-            title="Combined Medical Services Guidelines"
-            sub="PDF • 650 KB"
-            link="#"
-          />
-          <DownloadItem
-            title="Indian Economic Service Syllabus"
-            sub="PDF • 720 KB"
-            link="#"
-          />
-        </div>
-        {/* Application Forms */}
-        <div style={styles.topCardBox}>
-          <div style={styles.boxHead}>Application Forms</div>
-          <DownloadItem
-            title="Online Application Form"
-            sub="Web • Online"
-            link="#"
-          />
-          <DownloadItem
-            title="Disability Certificate Form"
-            sub="PDF • 340 KB"
-            link="#"
-          />
-          <DownloadItem
-            title="Category Certificate Format"
-            sub="PDF • 280 KB"
-            link="#"
-          />
-        </div>
-      </div>
-      <div style={styles.flexBottomBoxes}>
-        <ResourceCard
-          icon={calendarIcon}
-          title="Examination Calendar"
-          desc="Annual calendar of all UPSC examinations"
-          link="#"
-        />
-        <ResourceCard
-          icon={faqIcon}
-          title="FAQ Section"
-          desc="Frequently asked questions and answers"
-          link="#"
-        />
-        <ResourceCard
-          icon={contactIcon}
-          title="Contact Officers"
-          desc="Regional and sectional officer contact details"
-          link="#"
-        />
-      </div>
+      {!isMobile || !collapsed ? (
+        <>
+          <div style={{
+            ...styles.subhead,
+            fontSize: isMobile ? "1rem" : "1.15rem",
+            marginBottom: isMobile ? 20 : 46
+          }}>
+            Access previous year papers, syllabus, forms, and other essential resources<br /> for your preparation
+          </div>
+          <div style={{
+            ...styles.flexTopBoxes,
+            flexDirection: isMobile ? "column" : "row",
+            gap: isMobile ? 18 : 32,
+            padding: isMobile ? "0 2vw" : 0,
+            alignItems: "center"
+          }}>
+            <div style={{
+              ...styles.topCardBox,
+              width: isMobile ? "90vw" : 340,
+              padding: isMobile ? "14px 8px 6px 8px" : "22px 25px 9px 25px"
+            }}>
+              <div style={styles.boxHead}>Previous Year Papers</div>
+              <DownloadItem title="Civil Services Preliminary 2023" sub="PDF • 2.4 MB" link="#" isMobile={isMobile} />
+              <DownloadItem title="Engineering Services 2023" sub="PDF • 1.8 MB" link="#" isMobile={isMobile} />
+              <DownloadItem title="Indian Forest Service 2023" sub="PDF • 1.2 MB" link="#" isMobile={isMobile} />
+            </div>
+            <div style={{
+              ...styles.topCardBox,
+              width: isMobile ? "90vw" : 340,
+              padding: isMobile ? "14px 8px 6px 8px" : "22px 25px 9px 25px"
+            }}>
+              <div style={styles.boxHead}>Syllabus & Guidelines</div>
+              <DownloadItem title="Civil Services Examination Syllabus" sub="PDF • 890 KB" link="#" isMobile={isMobile} />
+              <DownloadItem title="Combined Medical Services Guidelines" sub="PDF • 650 KB" link="#" isMobile={isMobile} />
+              <DownloadItem title="Indian Economic Service Syllabus" sub="PDF • 720 KB" link="#" isMobile={isMobile} />
+            </div>
+            <div style={{
+              ...styles.topCardBox,
+              width: isMobile ? "90vw" : 340,
+              padding: isMobile ? "14px 8px 6px 8px" : "22px 25px 9px 25px"
+            }}>
+              <div style={styles.boxHead}>Application Forms</div>
+              <DownloadItem title="Online Application Form" sub="Web • Online" link="#" isMobile={isMobile} />
+              <DownloadItem title="Disability Certificate Form" sub="PDF • 340 KB" link="#" isMobile={isMobile} />
+              <DownloadItem title="Category Certificate Format" sub="PDF • 280 KB" link="#" isMobile={isMobile} />
+            </div>
+          </div>
+          <div style={{
+            ...styles.flexBottomBoxes,
+            flexDirection: isMobile ? "column" : "row",
+            gap: isMobile ? 18 : 32,
+            padding: isMobile ? "0 2vw" : 0,
+            alignItems: "center"
+          }}>
+            <ResourceCard icon={calendarIcon} title="Examination Calendar" desc="Annual calendar of all UPSC examinations" link="#" isMobile={isMobile} />
+            <ResourceCard icon={faqIcon} title="FAQ Section" desc="Frequently asked questions and answers" link="#" isMobile={isMobile} />
+            <ResourceCard icon={contactIcon} title="Contact Officers" desc="Regional and sectional officer contact details" link="#" isMobile={isMobile} />
+          </div>
+        </>
+      ) : null}
     </section>
   );
 }

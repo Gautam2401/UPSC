@@ -1,7 +1,6 @@
 import React from "react";
 
-
-// Example SVG icons (you can replace these with imports or SVG components)
+// Example SVG icons (replace imports etc. as needed)
 const icons = [
   (<svg height={36} viewBox="0 0 20 20" fill="#22376D"><path d="M5.5 2a0.5 0.5 0 1 1 1 0v2A0.5 0.5 0 0 1 5.5 4V2zM13.5 2a0.5 0.5 0 1 1 1 0v2A0.5 0.5 0 0 1 13.5 4V2zM3 6A2 2 0 0 1 5 4h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6zm2-1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H5z"/></svg>), // Apply Online
   (<svg height={36} viewBox="0 0 20 20" fill="#22376D"><path d="M10 4V10l3 3V4h1v10H6V4h1v9l3-3V4h1z"/></svg>), // Calendar
@@ -29,24 +28,75 @@ const cardData = [
   }
 ];
 
+// Responsive hook detecting mobile screens below 700px
+function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 700);
+  React.useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 700);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  return isMobile;
+}
+
 export default function HeroSection() {
+  const isMobile = useIsMobile();
+
   return (
     <section style={styles.section}>
-      <div style={styles.headline}>
+      <div style={{
+        ...styles.headline,
+        fontSize: isMobile ? "2rem" : "3rem",
+        maxWidth: isMobile ? "90vw" : 800,
+        margin: "0 auto 20px auto"
+      }}>
         Your Gateway to <span style={styles.accent}>Civil Services</span>
       </div>
-      <div style={styles.subtitle}>
+      <div style={{
+        ...styles.subtitle,
+        fontSize: isMobile ? "1rem" : "1.23rem",
+        maxWidth: isMobile ? "90vw" : 800,
+        margin: "0 auto 38px auto"
+      }}>
         Streamlined access to UPSC examinations, notifications, and resources. Your journey to public service starts here.
       </div>
-      <div style={styles.buttonRow}>
-        <button style={styles.primaryBtn}>
+      <div style={{
+        ...styles.buttonRow,
+        flexDirection: isMobile ? "column" : "row",
+        gap: isMobile ? 12 : 22,
+        alignItems: "center",
+        marginBottom: isMobile ? 30 : 50
+      }}>
+        <button style={{
+          ...styles.primaryBtn,
+          width: isMobile ? "90vw" : "auto",
+          padding: isMobile ? "14px 0" : "18px 36px",
+          fontSize: isMobile ? "1rem" : "1.13rem"
+        }}>
           Latest Notifications <span style={styles.arrow}>→</span>
         </button>
-        <button style={styles.secondaryBtn}>Download Forms</button>
+        <button style={{
+          ...styles.secondaryBtn,
+          width: isMobile ? "90vw" : "auto",
+          padding: isMobile ? "14px 0" : "18px 36px",
+          fontSize: isMobile ? "1rem" : "1.13rem"
+        }}>
+          Download Forms
+        </button>
       </div>
-      <div style={styles.cardsRow}>
+      <div style={{
+        ...styles.cardsRow,
+        flexDirection: isMobile ? "column" : "row",
+        gap: isMobile ? 24 : 38,
+        alignItems: "center"
+      }}>
         {cardData.map((card, idx) => (
-          <div key={idx} style={styles.card}>
+          <div key={idx} style={{
+            ...styles.card,
+            width: isMobile ? "90vw" : 340,
+            minHeight: isMobile ? 280 : 250,
+            padding: isMobile ? "24px 18px" : "38px 26px 24px 26px"
+          }}>
             <div style={styles.cardIcon}>{card.icon}</div>
             <div style={styles.cardTitle}>{card.title}</div>
             <div style={styles.cardSubtitle}>{card.subtitle}</div>
@@ -182,5 +232,4 @@ const styles = {
     fontWeight: 700,
     fontSize: "1.04rem"
   }
-  
 };
