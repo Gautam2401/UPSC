@@ -14,9 +14,9 @@ function useIsMobile() {
 const pages = [
   { name: "Home", path: "#" },
   { name: "Notifications", path: "#" },
-  { name: "Exam Schedule", path: "UPSC/examschedule" },
-  { name: "Results", path: "/UPSC/results" },
-  { name: "Resources", path: "UPSC/examschedule" },
+  { name: "Exam Schedule", path: "/examschedule" },
+  { name: "Results", path: "/results" },
+  { name: "Resources", path: "/examschedule" },
   { name: "Contact", path: "#" },
 ];
 
